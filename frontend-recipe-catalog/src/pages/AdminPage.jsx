@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { categoryAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import UserManagement from '../components/UserManagement';
+import IngredientManagement from '../components/IngredientManagement';
 import toast from 'react-hot-toast';
 
 const AdminPage = () => {
@@ -47,6 +49,11 @@ const AdminPage = () => {
     <div className="animate-fade-in max-w-4xl mx-auto">
       <h2 className="text-3xl font-extrabold text-slate-800 mb-6">⚙️ Quản trị hệ thống</h2>
 
+      {/* User Management */}
+      <div className="mb-6">
+        <UserManagement />
+      </div>
+
       {/* Category management */}
       <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6 mb-6">
         <h3 className="text-xl font-bold text-slate-800 mb-4">📂 Quản lý Danh mục</h3>
@@ -73,6 +80,11 @@ const AdminPage = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Ingredient Management */}
+      <div className="mb-6">
+        <IngredientManagement />
       </div>
     </div>
   );

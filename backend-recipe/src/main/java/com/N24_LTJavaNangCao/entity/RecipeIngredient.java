@@ -3,6 +3,7 @@ package com.N24_LTJavaNangCao.entity;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Bảng trung gian: liên kết Recipe <-> Ingredient với số lượng
@@ -14,6 +15,7 @@ public class RecipeIngredient extends PanacheEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = false)
+    @JsonIgnore
     public Recipe recipe;
 
     @ManyToOne(fetch = FetchType.EAGER)

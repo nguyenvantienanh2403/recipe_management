@@ -9,12 +9,38 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+
 /**
  * Service xử lý CRUD Recipe với search + pagination
  * Chuyển đổi entity <-> DTO để không expose entity trực tiếp
  */
 @ApplicationScoped
 public class RecipeAppService {
+
+    @Inject
+    EntityManager em;
+
+    /**
+     * Tìm kiếm công thức theo danh sách nguyên liệu (tủ lạnh)
+     * Sử dụng JPQL JOIN giữa Recipe ↔ RecipeIngredient ↔ Ingredient
+     * Trả về các công thức có chứa BẤT KỲ nguyên liệu nào trong danh sách
+     * Sắp xếp theo số nguyên liệu khớp giảm dần (món khớp nhiều nhất lên đầu)
+     */
+    public List<RecipeResponse> searchByIngredients(List<Long> ingredientIds) {
+        String jpql = "SELECT r FROM Recipe r " +
+                      "WHERE r.id IN (SELECT DISTINCT ri.recipe.id FROM RecipeIngredient ri WHERE ri.ingredient.id IN :ids) " +
+                      "ORDER BY r.id DESC";
+
+        List<Recipe> recipes = em.createQuery(jpql, Recipe.class)
+                .setParameter("ids", ingredientIds)
+                .getResultList();
+
+        return recipes.stream()
+                .map(this::toRecipeResponse)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Tìm kiếm + phân trang + lọc category
@@ -71,7 +97,36 @@ public class RecipeAppService {
             if (cat != null) recipe.category = cat;
         }
 
+        // Đồng thời cập nhật trường text[] ingredients để tương thích ngược
+        if (req.recipeIngredients != null) {
+            List<String> list = new java.util.ArrayList<>();
+            for (RecipeRequest.IngredientItemRequest item : req.recipeIngredients) {
+                if (item.ingredientId == null) continue;
+                Ingredient ingredient = Ingredient.findById(item.ingredientId);
+                if (ingredient != null) {
+                    list.add(ingredient.name + ": " + (item.quantity != null ? item.quantity : ""));
+                }
+            }
+            recipe.ingredients = list.toArray(new String[0]);
+        }
+
         recipe.persist();
+
+        // Lưu các RecipeIngredient liên kết vào bảng trung gian
+        if (req.recipeIngredients != null) {
+            for (RecipeRequest.IngredientItemRequest item : req.recipeIngredients) {
+                if (item.ingredientId == null) continue;
+                Ingredient ingredient = Ingredient.findById(item.ingredientId);
+                if (ingredient != null) {
+                    RecipeIngredient ri = new RecipeIngredient();
+                    ri.recipe = recipe;
+                    ri.ingredient = ingredient;
+                    ri.quantity = item.quantity;
+                    ri.persist();
+                }
+            }
+        }
+
         return toRecipeResponse(recipe);
     }
 
@@ -99,7 +154,37 @@ public class RecipeAppService {
             recipe.category = null;
         }
 
-        // Panache tự động persist khi @Transactional
+        // Xóa các liên kết RecipeIngredient cũ
+        RecipeIngredient.deleteByRecipeId(id);
+
+        // Lưu các liên kết RecipeIngredient mới
+        if (req.recipeIngredients != null) {
+            for (RecipeRequest.IngredientItemRequest item : req.recipeIngredients) {
+                if (item.ingredientId == null) continue;
+                Ingredient ingredient = Ingredient.findById(item.ingredientId);
+                if (ingredient != null) {
+                    RecipeIngredient ri = new RecipeIngredient();
+                    ri.recipe = recipe;
+                    ri.ingredient = ingredient;
+                    ri.quantity = item.quantity;
+                    ri.persist();
+                }
+            }
+        }
+
+        // Đồng thời cập nhật trường text[] ingredients để tương thích ngược
+        if (req.recipeIngredients != null) {
+            List<String> list = new java.util.ArrayList<>();
+            for (RecipeRequest.IngredientItemRequest item : req.recipeIngredients) {
+                if (item.ingredientId == null) continue;
+                Ingredient ingredient = Ingredient.findById(item.ingredientId);
+                if (ingredient != null) {
+                    list.add(ingredient.name + ": " + (item.quantity != null ? item.quantity : ""));
+                }
+            }
+            recipe.ingredients = list.toArray(new String[0]);
+        }
+
         return toRecipeResponse(recipe);
     }
 
@@ -147,6 +232,12 @@ public class RecipeAppService {
      */
     private RecipeResponse toRecipeResponse(Recipe recipe) {
         RecipeResponse dto = RecipeResponse.fromEntity(recipe);
+
+        // Nạp danh sách nguyên liệu quan hệ
+        List<RecipeIngredient> riList = RecipeIngredient.findByRecipeId(recipe.id);
+        dto.recipeIngredients = riList.stream()
+                .map(RecipeIngredientResponse::fromEntity)
+                .collect(Collectors.toList());
 
         // Tính rating trung bình và tổng comment
         List<Comment> comments = Comment.findByRecipeId(recipe.id);

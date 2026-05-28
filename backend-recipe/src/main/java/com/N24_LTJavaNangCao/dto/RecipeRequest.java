@@ -19,4 +19,11 @@ public class RecipeRequest {
     public String[] ingredients;
     public String[] instructions;
     public Long categoryId; // ID danh mục
+
+    public java.util.List<IngredientItemRequest> recipeIngredients;
+
+    public static class IngredientItemRequest {
+        public Long ingredientId;
+        public String quantity;
+    }
 }

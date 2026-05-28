@@ -26,6 +26,7 @@ public class RecipeResponse {
     public double averageRating;
     public int totalComments;
     public LocalDateTime createdAt;
+    public java.util.List<RecipeIngredientResponse> recipeIngredients;
 
     public RecipeResponse() {}
 

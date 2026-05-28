@@ -68,6 +68,10 @@ export const recipeAPI = {
 
   // Xóa
   delete: (id) => api.delete(`/recipes/${id}`),
+
+  // Tìm kiếm theo nguyên liệu tủ lạnh
+  searchByIngredients: (ingredientIds) =>
+    api.post("/recipes/search-by-ingredients", { ingredientIds }),
 };
 
 // =====================================================
@@ -88,6 +92,23 @@ export const commentAPI = {
   getByRecipe: (recipeId) => api.get(`/comments/recipe/${recipeId}`),
   create: (data) => api.post("/comments", data),
   delete: (id) => api.delete(`/comments/${id}`),
+};
+
+// =====================================================
+// USER API (Admin)
+// =====================================================
+export const userAPI = {
+  getAll: () => api.get("/users"),
+};
+
+// =====================================================
+// INGREDIENT API
+// =====================================================
+export const ingredientAPI = {
+  getAll: () => api.get("/ingredients"),
+  create: (data) => api.post("/ingredients", data),
+  update: (id, data) => api.put(`/ingredients/${id}`, data),
+  delete: (id) => api.delete(`/ingredients/${id}`),
 };
 
 // =====================================================

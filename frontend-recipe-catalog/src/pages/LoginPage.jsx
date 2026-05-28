@@ -89,14 +89,7 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Demo accounts info */}
-          {isLogin && (
-            <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 text-sm text-sky-800">
-              <p className="font-bold mb-1">🔑 Tài khoản demo:</p>
-              <p>Admin: <code className="bg-sky-100 px-1 rounded">admin@gmail.com</code> / <code className="bg-sky-100 px-1 rounded">123456</code></p>
-              <p>User: <code className="bg-sky-100 px-1 rounded">user@gmail.com</code> / <code className="bg-sky-100 px-1 rounded">123456</code></p>
-            </div>
-          )}
+
 
           <div className="pt-2">
             <button

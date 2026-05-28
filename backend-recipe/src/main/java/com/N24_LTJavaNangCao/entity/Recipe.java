@@ -19,9 +19,10 @@ public class Recipe extends PanacheEntity {
     @Column(nullable = false)
     public String name;
 
+    @Column(columnDefinition = "TEXT")
     public String image;
 
-    @Column(length = 500)
+    @Column(columnDefinition = "TEXT")
     public String description; // Mô tả ngắn về món ăn
 
     public int prepTimeMinutes;

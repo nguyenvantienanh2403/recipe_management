@@ -64,6 +64,16 @@ public class RecipeResource {
         return Response.ok(recipe).build();
     }
 
+    // --- 3b. Tìm kiếm theo nguyên liệu tủ lạnh ---
+    @POST
+    @Path("/search-by-ingredients")
+    @PermitAll
+    @Operation(summary = "Tìm công thức theo nguyên liệu (JOIN Recipe ↔ RecipeIngredient ↔ Ingredient)")
+    public Response searchByIngredients(@Valid IngredientSearchRequest req) {
+        List<RecipeResponse> recipes = recipeService.searchByIngredients(req.ingredientIds);
+        return Response.ok(recipes).build();
+    }
+
     // --- 4. Tạo recipe mới (cần đăng nhập) ---
     @POST
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})

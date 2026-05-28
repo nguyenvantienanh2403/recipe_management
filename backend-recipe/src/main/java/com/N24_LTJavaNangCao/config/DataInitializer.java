@@ -136,6 +136,101 @@ public class DataInitializer {
         createFavorite(user2, r4);
         createFavorite(user2, r6);
 
+        // === 7. INGREDIENTS (Nguyên liệu chuẩn hóa cho tìm kiếm tủ lạnh) ===
+        Ingredient banhPho = createIngredient("Bánh phở");
+        Ingredient thitBo = createIngredient("Thịt bò");
+        Ingredient xuongBo = createIngredient("Xương bò");
+        Ingredient gung = createIngredient("Gừng");
+        Ingredient hanhTim = createIngredient("Hành tím");
+        Ingredient hanhLa = createIngredient("Hành lá");
+        Ingredient thitBaChi = createIngredient("Thịt ba chỉ");
+        Ingredient bunTuoi = createIngredient("Bún tươi");
+        Ingredient nuocMam = createIngredient("Nước mắm");
+        Ingredient duong = createIngredient("Đường");
+        Ingredient suonCotLet = createIngredient("Sườn cốt lết");
+        Ingredient gaoTam = createIngredient("Gạo tấm");
+        Ingredient matOng = createIngredient("Mật ong");
+        Ingredient sa = createIngredient("Sả");
+        Ingredient toi = createIngredient("Tỏi");
+        Ingredient bapBo = createIngredient("Bắp bò");
+        Ingredient gioHeo = createIngredient("Giò heo");
+        Ingredient mamRuoc = createIngredient("Mắm ruốc");
+        Ingredient banhMi = createIngredient("Bánh mì");
+        Ingredient thitHeo = createIngredient("Thịt heo");
+        Ingredient duaLeo = createIngredient("Dưa leo");
+        Ingredient pate = createIngredient("Pate");
+        Ingredient tomSu = createIngredient("Tôm sú");
+        Ingredient banhTrang = createIngredient("Bánh tráng");
+        Ingredient rauThom = createIngredient("Rau thơm");
+        Ingredient khoaiTay = createIngredient("Khoai tây");
+        Ingredient hanhTay = createIngredient("Hành tây");
+        Ingredient otChuong = createIngredient("Ớt chuông");
+        Ingredient dauHao = createIngredient("Dầu hào");
+        Ingredient botNep = createIngredient("Bột nếp");
+        Ingredient dauXanh = createIngredient("Đậu xanh");
+        Ingredient nuocCotDua = createIngredient("Nước cốt dừa");
+        Ingredient duongThotNot = createIngredient("Đường thốt nốt");
+
+        // === 8. RECIPE_INGREDIENTS (Liên kết Recipe ↔ Ingredient) ===
+        // Phở Bò Hà Nội
+        linkIngredient(r1, banhPho, "500g");
+        linkIngredient(r1, thitBo, "300g");
+        linkIngredient(r1, xuongBo, "1kg");
+        linkIngredient(r1, gung, "1 củ");
+        linkIngredient(r1, hanhTim, "3 củ");
+        linkIngredient(r1, hanhLa, "1 bó");
+
+        // Bún Chả Hà Nội
+        linkIngredient(r2, thitBaChi, "500g");
+        linkIngredient(r2, bunTuoi, "500g");
+        linkIngredient(r2, nuocMam, "3 muỗng");
+        linkIngredient(r2, duong, "2 muỗng");
+
+        // Cơm Tấm Sườn Nướng
+        linkIngredient(r3, suonCotLet, "500g");
+        linkIngredient(r3, gaoTam, "300g");
+        linkIngredient(r3, matOng, "2 muỗng");
+        linkIngredient(r3, sa, "2 cây");
+        linkIngredient(r3, toi, "3 tép");
+        linkIngredient(r3, nuocMam, "2 muỗng");
+
+        // Bún Bò Huế
+        linkIngredient(r4, xuongBo, "1kg");
+        linkIngredient(r4, bapBo, "500g");
+        linkIngredient(r4, gioHeo, "1 cái");
+        linkIngredient(r4, mamRuoc, "2 muỗng");
+        linkIngredient(r4, sa, "3 cây");
+        linkIngredient(r4, bunTuoi, "500g");
+
+        // Bánh Mì Thịt Nướng
+        linkIngredient(r5, banhMi, "4 ổ");
+        linkIngredient(r5, thitHeo, "400g");
+        linkIngredient(r5, duaLeo, "2 quả");
+        linkIngredient(r5, pate, "100g");
+        linkIngredient(r5, dauHao, "1 muỗng");
+
+        // Gỏi Cuốn Tôm Thịt
+        linkIngredient(r6, tomSu, "300g");
+        linkIngredient(r6, thitBaChi, "300g");
+        linkIngredient(r6, banhTrang, "10 tấm");
+        linkIngredient(r6, bunTuoi, "200g");
+        linkIngredient(r6, rauThom, "1 bó");
+
+        // Bò Lúc Lắc Khoai Tây
+        linkIngredient(r7, thitBo, "400g");
+        linkIngredient(r7, hanhTay, "1 củ");
+        linkIngredient(r7, otChuong, "1 quả");
+        linkIngredient(r7, khoaiTay, "300g");
+        linkIngredient(r7, dauHao, "2 muỗng");
+        linkIngredient(r7, toi, "4 tép");
+
+        // Chè Trôi Nước Cốt Dừa
+        linkIngredient(r8, botNep, "500g");
+        linkIngredient(r8, dauXanh, "200g");
+        linkIngredient(r8, duongThotNot, "300g");
+        linkIngredient(r8, gung, "1 củ");
+        linkIngredient(r8, nuocCotDua, "1 lon");
+
         System.out.println("✅ Seed data initialized successfully!");
     }
 
@@ -170,5 +265,20 @@ public class DataInitializer {
         Favorite f = new Favorite();
         f.user = user; f.recipe = recipe;
         f.persist();
+    }
+
+    private Ingredient createIngredient(String name) {
+        Ingredient i = new Ingredient();
+        i.name = name;
+        i.persist();
+        return i;
+    }
+
+    private void linkIngredient(Recipe recipe, Ingredient ingredient, String quantity) {
+        RecipeIngredient ri = new RecipeIngredient();
+        ri.recipe = recipe;
+        ri.ingredient = ingredient;
+        ri.quantity = quantity;
+        ri.persist();
     }
 }
